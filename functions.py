@@ -1,6 +1,6 @@
 from classes import AddressBook, Name, Phone, Record
 
-contact_book = AddressBook()
+contact_book = AddressBook('data.bin')
 
 def error_handler(func):
     def inner(*args):
@@ -22,7 +22,8 @@ def unknown_command(args):
     return "unknown_command"
 
 def exit(args):
-    return
+    contact_book.save_to_file()
+    return None
 
 @error_handler
 def add_user(args):

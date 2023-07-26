@@ -1,6 +1,8 @@
 from collections import UserDict
 from datetime import datetime
 import re
+from pathlib import Path
+import pickle
 
 class Field:
     def __init__(self, value) -> None:
@@ -79,6 +81,10 @@ class Record:
                 return checking.days 
 
 class AddressBook(UserDict):
+    def __init__(self, filename: str):
+        self.filename = Path(filename)
+        self.read_from_file()
+
     def add_record(self, record):
         self.data[record.name.value] = record.phones
     
@@ -104,3 +110,23 @@ class AddressBook(UserDict):
                 result = ''
         if result:
             yield result
+
+    def save_to_file(self):
+        with open(self.filename, 'wb') as file:
+            pickle.dump(self.data, file)
+
+    def read_from_file(self):
+        if not self.filename.exists():
+            return None
+        with open(self.filename, 'rb') as file:
+            self.data = pickle.load(file)
+
+    def search_by_content(self, entered_string: str):
+        part_of_name, *args = entered_string.split()
+        part_of_phone = args[0]
+        list_of_users = []
+        for name, phone_list in self.data.items():
+            for phone in phone_list:
+                if part_of_name in name or part_of_phone in phone.value:
+                    list_of_users.append(name)
+        return list_of_users
