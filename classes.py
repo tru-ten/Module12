@@ -82,6 +82,7 @@ class Record:
 
 class AddressBook(UserDict):
     def __init__(self, filename: str):
+        super().__init__()
         self.filename = Path(filename)
         self.read_from_file()
 
